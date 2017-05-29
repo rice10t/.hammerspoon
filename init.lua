@@ -71,15 +71,12 @@ eventtap = hs.eventtap.new({ hs.eventtap.event.types.keyDown, hs.eventtap.event.
     local eventType = event:getType()
 
     if eventType == hs.eventtap.event.types.keyDown then
-        local fired = handleKeyDown(pressedKeyCode)
-        print('fired:')
-        print(fired)
-        if fired then
-            return true
-        end
+        -- キーが押下されたとき
+        return handleKeyDown(pressedKeyCode)
     elseif eventType == hs.eventtap.event.types.keyUp then
         -- キーが離されたとき
         handleKeyUp(pressedKeyCode)
+        return false
     end
 end)
 
