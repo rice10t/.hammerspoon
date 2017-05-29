@@ -14,18 +14,23 @@ KEY_LEFT = 123
 KEY_RIGHT = 124
 KEY_DOWN = 125
 KEY_UP = 126
+-- 英数キーが押下されている状態かどうか
 local eisuuKeyPressing = false
 
+-- 指定したキーを入力する
 local function sendKey(keyCode)
     hs.eventtap.keyStroke({}, keyCode, 0)
 end
 
 local function handleKeyDown(keyCode)
     if keyCode == KEY_EISUU then
+        -- 英数キー入力中
         eisuuKeyPressing = true
     end
 
     if eisuuKeyPressing then
+        -- ここで英数キーが押されている場合のキーコンフィグを設定する
+
         if keyCode == KEY_H then
             sendKey(KEY_LEFT)
             return true
@@ -56,6 +61,7 @@ end
 
 local function handleKeyUp(keyCode)
     if keyCode == KEY_EISUU then
+        -- 英数キーが入力中でない
         eisuuKeyPressing = false
     end
 end
@@ -72,12 +78,14 @@ eventtap = hs.eventtap.new({ hs.eventtap.event.types.keyDown, hs.eventtap.event.
             return true
         end
     elseif eventType == hs.eventtap.event.types.keyUp then
+        -- キーが離されたとき
         handleKeyUp(pressedKeyCode)
     end
 end)
 
 eventtap:start()
 
+-- ctrl + escapeのときの設定
 hs.hotkey.bind({'ctrl'}, 30, 'esc',
     function() 
         sendKey(KEY_ESCAPE)
