@@ -17,7 +17,7 @@ KEY_UP = 126
 -- 英数キーが押下されている状態かどうか
 local eisuuKeyPressing = false
 -- 最後に押されたキー
-local lastTimEisuuKeyUpped = false 
+local lastTimeEisuuKeyDowned = false 
 
 -- 指定したキーを入力する
 local function sendKey(keyCode)
@@ -28,6 +28,14 @@ local function handleKeyDown(keyCode)
     if keyCode == KEY_EISUU then
         -- 英数キー入力中
         eisuuKeyPressing = true
+
+        if lastTimeEisuuKeyDowned then
+            lastTimeEisuuKeyDowned = false
+            return false
+        else
+            lastTimeEisuuKeyDowned = true
+            return true
+        end
     end
 
     local hotkeyFired = false
@@ -60,6 +68,7 @@ local function handleKeyDown(keyCode)
         end
     end
 
+    lastTimeEisuuKeyDowned = false
     if hotkeyFired then
         return true
     else 
@@ -73,19 +82,6 @@ local function handleKeyUp(keyCode)
         eisuuKeyPressing = false
     end
 
-    if keyCode == KEY_EISUU then
-        if lastTimEisuuKeyUpped then
-            -- 英数キーが2回連続で入力されたので英数入力に切り替える
-            lastTimEisuuKeyUpped = false
-            return false
-        else
-            -- 1回目は無効
-            lastTimEisuuKeyUpped = true
-            return true
-        end
-    end
-
-    lastTimEisuuKeyUpped = false
     return false
 end
 
