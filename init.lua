@@ -28,35 +28,41 @@ local function handleKeyDown(keyCode)
         eisuuKeyPressing = true
     end
 
+    local hotkeyFired = false
+
     if eisuuKeyPressing then
         -- ここで英数キーが押されている場合のキーコンフィグを設定する
 
         if keyCode == KEY_H then
             sendKey(KEY_LEFT)
-            return true
+            hotkeyFired = true
         elseif keyCode == KEY_J then
             sendKey(KEY_DOWN)
-            return true
+            hotkeyFired = true
         elseif keyCode == KEY_K then
             sendKey(KEY_UP)
-            return true
+            hotkeyFired = true
         elseif keyCode == KEY_L then
             sendKey(KEY_RIGHT)
-            return true
+            hotkeyFired = true
         elseif keyCode == KEY_N then
             sendKey(KEY_DEL)
-            return true
+            hotkeyFired = true
         elseif keyCode == KEY_M then
             sendKey(KEY_RIGHT)
             sendKey(KEY_DEL)
-            return true
+            hotkeyFired = true
         elseif keyCode == KEY_SPACE then
             sendKey(KEY_ENTER)
-            return true
+            hotkeyFired = true
         end
     end
 
-    return false
+    if hotkeyFired then
+        return true
+    else 
+        return false
+    end
 end
 
 local function handleKeyUp(keyCode)
