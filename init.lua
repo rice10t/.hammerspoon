@@ -16,6 +16,8 @@ KEY_DOWN = 125
 KEY_UP = 126
 -- 英数キーが押下されている状態かどうか
 local eisuuKeyPressing = false
+-- 最後に押されたキー
+local lastTimEisuuKeyUpped = false 
 
 -- 指定したキーを入力する
 local function sendKey(keyCode)
@@ -70,6 +72,21 @@ local function handleKeyUp(keyCode)
         -- 英数キーが入力中でない
         eisuuKeyPressing = false
     end
+
+    if keyCode == KEY_EISUU then
+        if lastTimEisuuKeyUpped then
+            -- 英数キーが2回連続で入力されたので英数入力に切り替える
+            lastTimEisuuKeyUpped = false
+            return false
+        else
+            -- 1回目は無効
+            lastTimEisuuKeyUpped = true
+            return true
+        end
+    end
+
+    lastTimEisuuKeyUpped = false
+    return false
 end
 
 eventtap = hs.eventtap.new({ hs.eventtap.event.types.keyDown, hs.eventtap.event.types.keyUp }, function(event)
@@ -81,8 +98,7 @@ eventtap = hs.eventtap.new({ hs.eventtap.event.types.keyDown, hs.eventtap.event.
         return handleKeyDown(pressedKeyCode)
     elseif eventType == hs.eventtap.event.types.keyUp then
         -- キーが離されたとき
-        handleKeyUp(pressedKeyCode)
-        return false
+        return handleKeyUp(pressedKeyCode)
     end
 end)
 
