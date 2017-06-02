@@ -133,7 +133,7 @@ end)
 
 eventtap:start()
 
--- ctrl + escapeのときの設定
+-- ctrl + [ = Escape
 hs.hotkey.bind({'ctrl'}, 30, 'esc',
     function() 
         sendKey(KEY_ESCAPE)
