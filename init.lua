@@ -16,8 +16,10 @@ KEY_DOWN = 125
 KEY_UP = 126
 -- 英数キーが押下されている状態かどうか
 local eisuuKeyPressing = false
+-- かなキーが押下されている状態かどうか
+local kanaKeyPressing = false
 -- 最後に押されたキー
-local lastTimeEisuuKeyDowned = false 
+local lastTimeDownKey = null
 
 -- 指定したキーを入力する
 local function sendKey(keyCode)
@@ -28,12 +30,19 @@ local function handleKeyDown(keyCode)
     if keyCode == KEY_EISUU then
         -- 英数キー入力中
         eisuuKeyPressing = true
+    end
 
-        if lastTimeEisuuKeyDowned then
-            lastTimeEisuuKeyDowned = false
+    if keyCode == KEY_KANA then
+        -- かなキー入力中
+        kanaKeyPressing = true
+    end
+
+    if keyCode == KEY_EISUU or keyCode == KEY_KANA then
+        if lastTimeDownKey == keyCode then
+            lastTimeDownKey = keyCode
             return false
         else
-            lastTimeEisuuKeyDowned = true
+            lastTimeDownKey = keyCode
             return true
         end
     end
@@ -68,7 +77,28 @@ local function handleKeyDown(keyCode)
         end
     end
 
-    lastTimeEisuuKeyDowned = false
+    if kanaKeyPressing then
+        -- ここでかなキーが押されている場合のキーコンフィグを設定する
+
+        if keyCode == KEY_H then
+            hs.eventtap.keyStroke({'cmd'}, KEY_LEFT, 0)
+            hotkeyFired = true
+        elseif keyCode == KEY_L then
+            hs.eventtap.keyStroke({'cmd'}, KEY_RIGHT, 0)
+            hotkeyFired = true
+        elseif keyCode == KEY_J then
+            -- 上手く動かないのでコメントアウト
+            -- hs.eventtap.keyStroke({'fn'}, KEY_DOWN, 0)
+            hotkeyFired = true
+        elseif keyCode == KEY_K then
+            -- 上手く動かないのでコメントアウト
+            -- hs.eventtap.keyStroke({'fn'}, KEY_UP, 0)
+            hotkeyFired = true
+        end
+
+    end
+
+    lastTimeDownKey = keyCode
     if hotkeyFired then
         return true
     else 
@@ -80,6 +110,9 @@ local function handleKeyUp(keyCode)
     if keyCode == KEY_EISUU then
         -- 英数キーが入力中でない
         eisuuKeyPressing = false
+    elseif keyCode == KEY_KANA then
+        -- かなキーが入力中でない
+        kanaKeyPressing = false
     end
 
     return false
