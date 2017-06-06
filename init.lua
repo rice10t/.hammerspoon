@@ -39,6 +39,7 @@ local function handleKeyDown(keyCode)
 
     if keyCode == KEY_EISUU or keyCode == KEY_KANA then
         if lastTimeDownKey == keyCode then
+            -- (かなキー|英数キー)が２回連続で押されたときのみ(かな入力|英数入力)に移行する
             lastTimeDownKey = keyCode
             return false
         else
@@ -100,6 +101,7 @@ local function handleKeyDown(keyCode)
 
     lastTimeDownKey = keyCode
     if hotkeyFired then
+        -- 設定したキーバインドが使用された場合は元のキーイベントは無効化する
         return true
     else 
         return false
@@ -115,6 +117,7 @@ local function handleKeyUp(keyCode)
         kanaKeyPressing = false
     end
 
+    -- キーアップイベントは常に成功する
     return false
 end
 
